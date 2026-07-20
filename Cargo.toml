@@ -1,0 +1,10 @@
+[package]
+name = "xmip-contract"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/IlleNilsson/xmip-contract"
+description = "Declared structure, validation and structural access contracts for Xmip."
+
+[dependencies]
+xmip-stream = { git = "https://github.com/IlleNilsson/xmip-stream", rev = "3855d6b37988f0ff5962a27662824d5da20cce70" }
