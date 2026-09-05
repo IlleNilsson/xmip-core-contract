@@ -10,4 +10,4 @@ repository = "https://github.com/IlleNilsson/xmip-core-contract"
 description = "Declared structure, validation and structural access contracts for Xmip."
 
 [dependencies]
-xmip-stream = { package = "xmip-core-stream", git = "https://github.com/IlleNilsson/xmip-core-stream", branch = "main" }
+stream = { package = "xmip-core-stream", git = "https://github.com/IlleNilsson/xmip-core-stream", branch = "main" }
