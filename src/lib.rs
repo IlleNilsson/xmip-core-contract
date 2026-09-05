@@ -2,7 +2,7 @@
 
 use std::error::Error;
 use std::fmt;
-use xmip_stream::Stream;
+use stream::Stream;
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ContractId(pub String);
