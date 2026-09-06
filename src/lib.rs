@@ -62,12 +62,8 @@ pub trait StructureWriter: Send {
     fn finish(self: Box<Self>) -> Result<Stream, ContractError>;
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub enum StructuredValue {
-    Null,
-    Bool(bool),
-    Integer(i64),
-    Decimal(f64),
-    Text(String),
-    Binary(Vec<u8>),
-}
+/// A structured content field's value is one scalar, the shared `ScalarValue`
+/// primitive (foundation/core) — `StructuredValue` is contract's name for it.
+/// Because `context::ContextValue` aliases the same type, promoting a field into
+/// a property needs no conversion: they are one type, not two identical ones.
+pub use xcore::ScalarValue as StructuredValue;
