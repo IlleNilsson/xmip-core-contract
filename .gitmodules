@@ -16,3 +16,9 @@
 [submodule "xmip-core-contract-schematron"]
 	path = schematron
 	url = https://github.com/IlleNilsson/xmip-core-contract-schematron.git
+[submodule "xmip-core-contract-fixed-width"]
+	path = fixed-width
+	url = https://github.com/IlleNilsson/xmip-core-contract-fixed-width.git
+[submodule "xmip-core-contract-edi-edifact"]
+	path = edi-edifact
+	url = https://github.com/IlleNilsson/xmip-core-contract-edi-edifact.git
