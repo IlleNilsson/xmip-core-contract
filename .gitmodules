@@ -1,3 +1,6 @@
 [submodule "modules/csv"]
 	path = module/csv
 	url = https://github.com/IlleNilsson/xmip-core-contract-csv.git
+[submodule "xmip-core-contract-dotnet"]
+	path = module/dotnet
+	url = https://github.com/IlleNilsson/xmip-core-contract-dotnet.git
