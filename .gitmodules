@@ -4,3 +4,9 @@
 [submodule "xmip-core-contract-dotnet"]
 	path = dotnet
 	url = https://github.com/IlleNilsson/xmip-core-contract-dotnet.git
+[submodule "xmip-core-contract-json-schema"]
+	path = json-schema
+	url = https://github.com/IlleNilsson/xmip-core-contract-json-schema.git
+[submodule "xmip-core-contract-xml-schema"]
+	path = xml-schema
+	url = https://github.com/IlleNilsson/xmip-core-contract-xml-schema.git
