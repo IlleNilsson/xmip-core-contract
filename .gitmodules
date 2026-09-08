@@ -40,3 +40,9 @@
 [submodule "xmip-core-contract-rust"]
 	path = rust
 	url = https://github.com/IlleNilsson/xmip-core-contract-rust.git
+[submodule "xmip-core-contract-hl7-v2"]
+	path = hl7-v2
+	url = https://github.com/IlleNilsson/xmip-core-contract-hl7-v2.git
+[submodule "xmip-core-contract-fhir"]
+	path = fhir
+	url = https://github.com/IlleNilsson/xmip-core-contract-fhir.git
