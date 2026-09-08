@@ -22,3 +22,21 @@
 [submodule "xmip-core-contract-edi-edifact"]
 	path = edi-edifact
 	url = https://github.com/IlleNilsson/xmip-core-contract-edi-edifact.git
+[submodule "xmip-core-contract-c"]
+	path = c
+	url = https://github.com/IlleNilsson/xmip-core-contract-c.git
+[submodule "xmip-core-contract-cpp"]
+	path = cpp
+	url = https://github.com/IlleNilsson/xmip-core-contract-cpp.git
+[submodule "xmip-core-contract-go"]
+	path = go
+	url = https://github.com/IlleNilsson/xmip-core-contract-go.git
+[submodule "xmip-core-contract-java"]
+	path = java
+	url = https://github.com/IlleNilsson/xmip-core-contract-java.git
+[submodule "xmip-core-contract-python"]
+	path = python
+	url = https://github.com/IlleNilsson/xmip-core-contract-python.git
+[submodule "xmip-core-contract-rust"]
+	path = rust
+	url = https://github.com/IlleNilsson/xmip-core-contract-rust.git
