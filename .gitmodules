@@ -46,3 +46,24 @@
 [submodule "xmip-core-contract-fhir"]
 	path = fhir
 	url = https://github.com/IlleNilsson/xmip-core-contract-fhir.git
+[submodule "edi-x12"]
+	path = edi-x12
+	url = https://github.com/IlleNilsson/xmip-core-contract-edi-x12.git
+[submodule "avro"]
+	path = avro
+	url = https://github.com/IlleNilsson/xmip-core-contract-avro.git
+[submodule "graphql-schema"]
+	path = graphql-schema
+	url = https://github.com/IlleNilsson/xmip-core-contract-graphql-schema.git
+[submodule "protobuf"]
+	path = protobuf
+	url = https://github.com/IlleNilsson/xmip-core-contract-protobuf.git
+[submodule "wsdl"]
+	path = wsdl
+	url = https://github.com/IlleNilsson/xmip-core-contract-wsdl.git
+[submodule "openapi"]
+	path = openapi
+	url = https://github.com/IlleNilsson/xmip-core-contract-openapi.git
+[submodule "asyncapi"]
+	path = asyncapi
+	url = https://github.com/IlleNilsson/xmip-core-contract-asyncapi.git
