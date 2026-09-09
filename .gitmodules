@@ -67,3 +67,6 @@
 [submodule "asyncapi"]
 	path = asyncapi
 	url = https://github.com/IlleNilsson/xmip-core-contract-asyncapi.git
+[submodule "sql"]
+	path = sql
+	url = https://github.com/IlleNilsson/xmip-core-contract-sql.git
