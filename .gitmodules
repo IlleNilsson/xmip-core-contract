@@ -70,3 +70,12 @@
 [submodule "sql"]
 	path = sql
 	url = https://github.com/IlleNilsson/xmip-core-contract-sql.git
+[submodule "xmip-core-contract-toml"]
+	path = toml
+	url = https://github.com/IlleNilsson/xmip-core-contract-toml.git
+[submodule "xmip-core-contract-yaml"]
+	path = yaml
+	url = https://github.com/IlleNilsson/xmip-core-contract-yaml.git
+[submodule "xmip-core-contract-toon"]
+	path = toon
+	url = https://github.com/IlleNilsson/xmip-core-contract-toon.git
