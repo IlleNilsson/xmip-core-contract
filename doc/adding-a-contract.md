@@ -25,15 +25,17 @@ false so an operator sees *what* failed.
 
 ### Create, mount, land
 
-Exactly as Part A, substituting `contract` for `transport`:
+Exactly as a transport (`module/capability/transport/doc/adding-a-transport.md`),
+substituting `contract` for `transport`:
 
 - repo `xmip-core-contract-<name>`, mounted at `<name>` directly inside the
   contract capability's repository;
 - `Cargo.toml` depends on `contract = { package = "xmip-core-contract", … }`
   (and `stream`, for the `Stream` type);
-- declare `[xmip.core.contract.<name>]` in `architecture.toml`;
-- `gh repo create` (you) → scaffold → implement → `cargo test`/`clippy` → mount →
-  `Publish-XmipChange`.
+- declare `[xmip.core.contract.<name>]` in `architecture.toml`.
+
+How the repository is created, mounted and landed is the estate's:
+`doc/architecture/repository-model.md` sections 7, 8 and 10.
 
 The Playground pairs every contract against every transport, so a new contract is
 picked up by pingpong the same way a new transport is.

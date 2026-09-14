@@ -1,7 +1,16 @@
 #![forbid(unsafe_code)]
 
-use std::error::Error;
-use std::fmt;
+// What every technology of this capability shares, held here rather than
+// copied into each (ADR-0044): the issue and result constructors, the `$ref`
+// walk, the varint cursor, the layout types, the EDI segment and the test
+// fixture that builds a Stream.
+#[cfg(feature = "test-support")]
+pub mod fixture;
+pub mod layout;
+pub mod reference;
+pub mod segment;
+pub mod varint;
+
 use stream::Stream;
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -21,24 +30,49 @@ pub struct ValidationIssue {
     pub path: Option<String>,
 }
 
+impl ValidationIssue {
+    /// An issue with `code` and `message`, at `path` when there is one.
+    #[must_use]
+    pub fn new(code: &str, message: &str, path: Option<String>) -> Self {
+        Self {
+            code: code.to_string(),
+            message: message.to_string(),
+            path,
+        }
+    }
+
+    /// An issue at a place the technology can name.
+    #[must_use]
+    pub fn at(code: &str, message: &str, path: &str) -> Self {
+        Self::new(code, message, Some(path.to_string()))
+    }
+
+    /// The one issue every technology raises alike: the Stream cannot be read
+    /// as the representation at all, so no path can be named.
+    #[must_use]
+    pub fn malformed(message: &str) -> Self {
+        Self::new("malformed", message, None)
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ValidationResult {
     pub valid: bool,
     pub issues: Vec<ValidationIssue>,
 }
 
-#[derive(Debug)]
-pub struct ContractError {
-    pub message: String,
-}
-
-impl fmt::Display for ContractError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(&self.message)
+impl ValidationResult {
+    /// Valid exactly when there is no issue.
+    #[must_use]
+    pub fn of(issues: Vec<ValidationIssue>) -> Self {
+        Self {
+            valid: issues.is_empty(),
+            issues,
+        }
     }
 }
 
-impl Error for ContractError {}
+xcore::declare_error!(ContractError);
 
 pub trait Contract: Send + Sync {
     fn descriptor(&self) -> &ContractDescriptor;
@@ -165,5 +199,22 @@ mod tests {
         let refused = Factory.load("schema.xsd").err().expect("refused");
         assert!(refused.to_string().contains("schema.xsd"));
         assert_eq!(StructuredValue::Integer(1), xcore::ScalarValue::Integer(1));
+        assert_eq!(ContractError::new("why").to_string(), "why");
+    }
+
+    #[test]
+    fn an_issue_is_built_three_ways_and_a_result_is_valid_without_one() {
+        let placed = ValidationIssue::at("structure", "paths is missing", "paths");
+        assert_eq!(
+            placed,
+            ValidationIssue::new("structure", "paths is missing", Some("paths".into()))
+        );
+        let malformed = ValidationIssue::malformed("not JSON");
+        assert_eq!(malformed.code, "malformed");
+        assert_eq!(malformed.path, None);
+        assert!(ValidationResult::of(Vec::new()).valid);
+        let held = ValidationResult::of(vec![malformed]);
+        assert!(!held.valid);
+        assert_eq!(held.issues.len(), 1);
     }
 }
