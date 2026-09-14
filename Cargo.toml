@@ -13,6 +13,14 @@ description = "Declared structure, validation and structural access contracts fo
 # A host crate: the technologies mount beside this source (ADR-0049).
 path = ".src/lib.rs"
 
+[features]
+# The Stream fixture a technology's tests read (fixture.rs). A technology
+# enables it from its dev-dependencies, so nothing of it ships.
+test-support = []
+
 [dependencies]
 xcore = { package = "xmip-core", git = "https://github.com/IlleNilsson/xmip-core", branch = "main" }
 stream = { package = "xmip-core-stream", git = "https://github.com/IlleNilsson/xmip-core-stream", branch = "main" }
+# The `$ref` walk a JSON description shares (reference.rs, ADR-0044) reads
+# with the parser the JSON technologies read with.
+serde_json = "1"
