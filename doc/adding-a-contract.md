@@ -38,7 +38,7 @@ How the repository is created, mounted and landed is the estate's:
 `doc/architecture/repository-model.md` sections 7, 8 and 10.
 
 The Playground pairs every contract against every transport, so a new contract is
-picked up by pingpong the same way a new transport is.
+picked up by RoundTrip the same way a new transport is.
 
 ---
 
