@@ -3,7 +3,7 @@
 //! must land in the document itself. The pointer after the `#` is RFC 6901,
 //! which `serde_json` already resolves.
 
-use sdk::contract::ValidationIssue;
+use crate::ValidationIssue;
 use serde_json::Value;
 
 /// Every `$ref` under `document` that begins with `#` and does not land, each
