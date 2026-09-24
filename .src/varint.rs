@@ -1,7 +1,7 @@
-//! Base-128 varints and the cursor that reads them, shared by the Avro and
-//! protobuf technologies (ADR-0044): both walk a datum by its schema without
-//! keeping what is read, and both begin every value with a varint. Avro's
-//! zig-zag and protobuf's tag are each technology's own, built over this.
+//! The cursor the Avro technology walks a datum with (ADR-0044), reading a
+//! base-128 varint at the start of every value. The encoder went to
+//! `message::scan` on 2026-09-23 beside the decoder it inverts; this reader
+//! follows it there when problem 25's contract-and-message rows land.
 
 /// A cursor over encoded bytes.
 pub struct Reader<'a> {
@@ -61,36 +61,18 @@ impl<'a> Reader<'a> {
     }
 }
 
-/// `value` as a base-128 varint.
-#[must_use]
-pub fn encode(mut value: u64) -> Vec<u8> {
-    let mut out = Vec::with_capacity(10);
-    loop {
-        let byte = u8::try_from(value & 0x7f).unwrap_or(0);
-        value >>= 7;
-        if value == 0 {
-            out.push(byte);
-            return out;
-        }
-        out.push(byte | 0x80);
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn varints_round_trip_and_the_cursor_says_where_it_is() {
-        for value in [0, 1, 127, 128, 300, u64::MAX] {
-            let bytes = encode(value);
-            let mut reader = Reader::new(&bytes);
-            assert_eq!(reader.varint().expect("varint"), value, "{value}");
-            assert!(reader.is_done());
-            assert_eq!(reader.position(), bytes.len());
-        }
-        assert_eq!(encode(300), [0xac, 0x02]);
-        assert_eq!(encode(u64::MAX).len(), 10);
+    fn a_varint_reads_and_the_cursor_says_where_it_is() {
+        let mut reader = Reader::new(&[0xac, 0x02]);
+        assert_eq!(reader.varint().expect("varint"), 300);
+        assert!(reader.is_done());
+        assert_eq!(reader.position(), 2);
+        let largest = [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01];
+        assert_eq!(Reader::new(&largest).varint().expect("varint"), u64::MAX);
     }
 
     #[test]
