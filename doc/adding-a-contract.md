@@ -4,12 +4,12 @@ Moved here from the estate root on 2026-09-12 (ADR-0020 clause 3: the document l
 
 
 Identical shape to a transport, against a different base. **`csv` is the
-reference implementation** — read `module/capability/contract/csv/`
+reference implementation** — read `module/core/capability/contract/csv/`
 before starting; your module is that module with the format changed.
 
 ### The base you implement
 
-`Contract` (`module/capability/contract/.src/lib.rs`):
+`Contract` (`module/core/capability/contract/.src/lib.rs`):
 
 ```rust
 pub trait Contract: Send + Sync {
@@ -25,7 +25,7 @@ false so an operator sees *what* failed.
 
 ### Create, mount, land
 
-Exactly as a transport (`module/capability/transport/doc/adding-a-transport.md`),
+Exactly as a transport (`module/core/capability/transport/doc/adding-a-transport.md`),
 substituting `contract` for `transport`:
 
 - repo `xmip-core-contract-<name>`, mounted at `<name>` directly inside the
