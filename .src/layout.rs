@@ -4,7 +4,7 @@
 //! notation's value is of a kind, and what a notation calls a value, stay
 //! with the notation.
 
-use crate::{ContractError, ValidationIssue};
+use sdk::contract::{ContractError, ValidationIssue};
 
 /// The seven types a layout may ask for.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
