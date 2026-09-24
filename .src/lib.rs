@@ -3,8 +3,9 @@
 #![deny(unsafe_code)]
 
 // What every technology of this capability shares, held here rather than
-// copied into each (ADR-0044): the `$ref` walk, the varint cursor, the layout
-// types, the EDI segment and the test fixture that builds a Stream. The trait
+// copied into each (ADR-0044): the `$ref` walk, the layout types, the EDI
+// segment and the test fixture that builds a Stream. The byte cursor and the
+// varint are codec's (xmip-core-library-codec) since 2026-09-24. The trait
 // a contract implements, and the export that makes a Rust contract a module a
 // node loads through the C ABI, are this capability's own: a provider's
 // contract implements the same trait core's do.
@@ -14,7 +15,6 @@ pub mod fixture;
 pub mod layout;
 pub mod reference;
 pub mod segment;
-pub mod varint;
 
 use stream::Stream;
 
