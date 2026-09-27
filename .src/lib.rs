@@ -17,6 +17,7 @@ pub mod reference;
 pub mod segment;
 
 use stream::Stream;
+use xcore::settings::{Applies, Given, Read, Settings};
 
 /// A contract's name, as a Location's configuration refers to it: `csv`,
 /// `json-schema`, a provider's own.
@@ -118,11 +119,48 @@ pub trait ContractFactory: Send + Sync {
     /// The technology's name, as the configuration names it.
     fn technology(&self) -> &'static str;
 
+    /// Every setting a Location gives this technology, declared once in its
+    /// own crate (ADR-0064, amendment 2026-09-26): `reference` where it takes
+    /// one, anything else it reads, and an empty list when it takes nothing.
+    /// `technology` is its module name, `env!("CARGO_PKG_NAME")`. The shape
+    /// is `xcore::settings`, the one a transport's settings take too.
+    fn settings(&self) -> &'static Settings;
+
     /// The contract `reference` describes.
     ///
     /// # Errors
     /// The reference cannot be read, or does not describe a contract.
     fn load(&self, reference: &str) -> Result<Box<dyn Contract>, ContractError>;
+
+    /// The contract a Location's settings describe, as the declaration read
+    /// them. Unless the technology reads more, that is its `reference`, or
+    /// none, handed to [`ContractFactory::load`] — the one string the C
+    /// ABI's `load` carries.
+    ///
+    /// # Errors
+    /// As [`ContractFactory::load`].
+    fn configured(&self, settings: &Read) -> Result<Box<dyn Contract>, ContractError> {
+        self.load(settings.optional_text("reference").unwrap_or(""))
+    }
+
+    /// Read what a Location on `side` gave through
+    /// [`ContractFactory::settings`], and build the contract from it: the one
+    /// way from a Location's table to a contract.
+    ///
+    /// # Errors
+    /// Every setting the declaration refuses, each naming the technology and
+    /// the setting; then whatever [`ContractFactory::configured`] refuses.
+    fn open(
+        &self,
+        side: Applies,
+        given: &[(String, Given)],
+    ) -> Result<Box<dyn Contract>, ContractError> {
+        let read = self
+            .settings()
+            .read(side, given)
+            .map_err(|refused| ContractError::new(refused.to_string()))?;
+        self.configured(&read)
+    }
 }
 
 /// Reading one value out of content by a path in the contract's own terms.
@@ -199,6 +237,11 @@ mod tests {
     impl ContractFactory for Factory {
         fn technology(&self) -> &'static str {
             "text"
+        }
+
+        fn settings(&self) -> &'static Settings {
+            const NONE: &Settings = &Settings::none("xmip-core-contract-text");
+            NONE
         }
 
         fn load(&self, reference: &str) -> Result<Box<dyn Contract>, ContractError> {

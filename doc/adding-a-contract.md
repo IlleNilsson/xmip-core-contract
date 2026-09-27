@@ -23,6 +23,18 @@ pub trait Contract: Send + Sync {
 answers "and is it well-formed", returning `ValidationIssue`s rather than a bare
 false so an operator sees *what* failed.
 
+`ContractFactory` makes the contract a Location names, and declares what a
+Location gives it (`fn settings`, ADR-0064 amendment 2026-09-26): the same
+`xcore::settings::Settings` a transport declares — its `reference` where it
+takes one (a schema, a message type, a copybook), anything else it reads,
+each with its kind, default or requirement and meaning, and `technology:
+env!("CARGO_PKG_NAME")`. `open` reads a Location's `contract_settings`
+through it and hands the result to `configured`, which is `load(reference)`
+unless the technology reads more; `load` keeps the one string the C ABI
+carries (`export.rs`). The declaration is the contract's form in VS Code and
+the desktop editor and what `configure` holds a Location to at start, so a
+setting is never parsed by hand and a default never written twice.
+
 ### Create, mount, land
 
 Exactly as a transport (`module/core/capability/transport/doc/adding-a-transport.md`),

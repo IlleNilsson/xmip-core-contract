@@ -417,6 +417,12 @@ mod tests {
             "text"
         }
 
+        fn settings(&self) -> &'static xcore::settings::Settings {
+            const NONE: &xcore::settings::Settings =
+                &xcore::settings::Settings::none("xmip-core-contract-text");
+            NONE
+        }
+
         fn load(&self, reference: &str) -> Result<Box<dyn Contract>, ContractError> {
             if !reference.is_empty() {
                 return Err(ContractError::new(format!("text takes no {reference}")));

@@ -11,6 +11,11 @@ A Contract holds well-formedness always and conformance when named
 not execute a Path; the representation technologies materialize, Paths
 address, and this evaluates (`repository-model.md` section 5).
 
+What a Location gives a contract is declared by the contract itself:
+`ContractFactory::settings`, in the shape a transport's settings take
+(`xcore::settings`), read through by `open` (ADR-0064, amendment
+2026-09-26).
+
 ADR-0010 and ADR-0042 govern it; each format is a technology mounted under
 this repository, `csv` the reference, and `doc/adding-a-contract.md` beside
 this file says how one is added. `architecture.toml` names them.
