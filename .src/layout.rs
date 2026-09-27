@@ -65,11 +65,7 @@ impl Required {
     /// The issue when the document has no such key.
     #[must_use]
     pub fn missing(&self) -> ValidationIssue {
-        ValidationIssue::at(
-            "required",
-            &format!("{} is required", self.path),
-            &self.path,
-        )
+        ValidationIssue::at("required", format!("{} is required", self.path), &self.path)
     }
 
     /// The issue when the key holds a value of another type, `actual` being

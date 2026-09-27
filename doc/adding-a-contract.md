@@ -21,7 +21,12 @@ pub trait Contract: Send + Sync {
 
 `identify` answers "does this stream look like mine" (cheaply); `validate`
 answers "and is it well-formed", returning `ValidationIssue`s rather than a bare
-false so an operator sees *what* failed.
+false so an operator sees *what* failed. Both read text through
+`Stream::text`, decoded once for the two of them; an issue's code is a
+`&'static str` where the technology names it, and its place is a
+`contract::place::Place` walked down the content and spelled only when an
+issue is raised. Whatever the reference names — a schema, a message type — is
+read and compiled in `load`, once; `validate` only walks the Stream.
 
 `ContractFactory` makes the contract a Location names, and declares what a
 Location gives it (`fn settings`, ADR-0064 amendment 2026-09-26): the same

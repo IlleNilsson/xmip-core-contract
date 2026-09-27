@@ -26,6 +26,9 @@ xmip_core_abi = { package = "xmip-core-abi", git = "https://github.com/IlleNilss
 # The `$ref` walk a JSON description shares (reference.rs, ADR-0044) reads
 # with the parser the JSON technologies read with.
 serde_json = "1"
+# A `$ref` is a URI fragment: percent-decoded by the estate's one reader
+# before it is a JSON Pointer (reference.rs).
+net = { package = "xmip-core-library-net", git = "https://github.com/IlleNilsson/xmip-core-library-net", branch = "main" }
 
 [profile.dev.package."*"]
 opt-level = 3

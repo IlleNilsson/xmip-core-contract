@@ -397,16 +397,14 @@ mod tests {
             if stream.bytes().first() == Some(&0) {
                 return Err(ContractError::new("a NUL first is not text of any kind"));
             }
-            Ok(ValidationResult::of(
-                match std::str::from_utf8(stream.bytes()) {
-                    Ok(_) => Vec::new(),
-                    Err(error) => vec![ValidationIssue::at(
-                        "not-text",
-                        "not UTF-8",
-                        &format!("byte {}", error.valid_up_to()),
-                    )],
-                },
-            ))
+            Ok(ValidationResult::of(match stream.text() {
+                Ok(_) => Vec::new(),
+                Err(error) => vec![ValidationIssue::at(
+                    "not-text",
+                    "not UTF-8",
+                    format!("byte {}", error.valid_up_to()),
+                )],
+            }))
         }
     }
 

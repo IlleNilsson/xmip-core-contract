@@ -3,7 +3,8 @@
 #![deny(unsafe_code)]
 
 // What every technology of this capability shares, held here rather than
-// copied into each (ADR-0044): the `$ref` walk, the layout types, the EDI
+// copied into each (ADR-0044): the `$ref` reading, the place an issue names
+// (JSON Pointer, dotted, XPath), the layout types, the EDI
 // segment and the test fixture that builds a Stream. The byte cursor and the
 // varint are codec's (xmip-core-library-codec) since 2026-09-24. The trait
 // a contract implements, and the export that makes a Rust contract a module a
@@ -13,9 +14,11 @@ pub mod export;
 #[cfg(feature = "test-support")]
 pub mod fixture;
 pub mod layout;
+pub mod place;
 pub mod reference;
 pub mod segment;
 
+use std::borrow::Cow;
 use stream::Stream;
 use xcore::settings::{Applies, Given, Read, Settings};
 
@@ -35,10 +38,11 @@ pub struct ContractDescriptor {
 
 /// One way a Stream departs from a contract: a short `code` a surface can
 /// count by, a `message` a person reads, and where in the content, when the
-/// contract can say.
+/// contract can say. A code is nearly always a word the technology names in
+/// its source, so it is borrowed, not allocated, per issue.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ValidationIssue {
-    pub code: String,
+    pub code: Cow<'static, str>,
     pub message: String,
     pub path: Option<String>,
 }
@@ -46,24 +50,32 @@ pub struct ValidationIssue {
 impl ValidationIssue {
     /// An issue with `code` and `message`, at `path` when there is one.
     #[must_use]
-    pub fn new(code: &str, message: &str, path: Option<String>) -> Self {
+    pub fn new(
+        code: impl Into<Cow<'static, str>>,
+        message: impl Into<String>,
+        path: Option<String>,
+    ) -> Self {
         Self {
-            code: code.to_string(),
-            message: message.to_string(),
+            code: code.into(),
+            message: message.into(),
             path,
         }
     }
 
     /// An issue at a place the technology can name.
     #[must_use]
-    pub fn at(code: &str, message: &str, path: &str) -> Self {
-        Self::new(code, message, Some(path.to_string()))
+    pub fn at(
+        code: impl Into<Cow<'static, str>>,
+        message: impl Into<String>,
+        path: impl Into<String>,
+    ) -> Self {
+        Self::new(code, message, Some(path.into()))
     }
 
     /// The one issue every technology raises alike: the Stream cannot be read
     /// as the representation at all, so no path can be named.
     #[must_use]
-    pub fn malformed(message: &str) -> Self {
+    pub fn malformed(message: impl Into<String>) -> Self {
         Self::new("malformed", message, None)
     }
 }
@@ -163,42 +175,6 @@ pub trait ContractFactory: Send + Sync {
     }
 }
 
-/// Reading one value out of content by a path in the contract's own terms.
-pub trait StructureReader: Send + Sync {
-    /// The contract the content is held to.
-    fn contract(&self) -> &ContractDescriptor;
-
-    /// The value at `path`, or `None` where the content has none.
-    ///
-    /// # Errors
-    /// The path is not one this contract can read.
-    fn read(&self, path: &str) -> Result<Option<StructuredValue>, ContractError>;
-}
-
-/// Writing content value by value, and finishing it as a new Stream.
-pub trait StructureWriter: Send {
-    /// The contract the content is written to.
-    fn contract(&self) -> &ContractDescriptor;
-
-    /// Set the value at `path`.
-    ///
-    /// # Errors
-    /// The path is not one this contract can write, or the value does not fit.
-    fn write(&mut self, path: &str, value: StructuredValue) -> Result<(), ContractError>;
-
-    /// The content written, as a Stream.
-    ///
-    /// # Errors
-    /// The content is not complete enough to be the contract's representation.
-    fn finish(self: Box<Self>) -> Result<Stream, ContractError>;
-}
-
-/// A structured content field's value is one scalar, the shared `ScalarValue`
-/// primitive (foundation/core) — `StructuredValue` is the contract's name for it.
-/// Because `context::ContextValue` aliases the same type, promoting a field into
-/// a property needs no conversion: they are one type, not two identical ones.
-pub use xcore::ScalarValue as StructuredValue;
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -217,10 +193,10 @@ mod tests {
         }
 
         fn validate(&self, stream: &Stream) -> Result<ValidationResult, ContractError> {
-            let issues = match std::str::from_utf8(stream.bytes()) {
+            let issues = match stream.text() {
                 Ok(_) => Vec::new(),
                 Err(error) => vec![ValidationIssue {
-                    code: "not-text".to_string(),
+                    code: "not-text".into(),
                     message: error.to_string(),
                     path: Some(format!("byte {}", error.valid_up_to())),
                 }],
@@ -300,7 +276,6 @@ mod tests {
         assert_eq!(Factory.technology(), "text");
         let refused = Factory.load("schema.xsd").err().expect("refused");
         assert!(refused.to_string().contains("schema.xsd"));
-        assert_eq!(StructuredValue::Integer(1), xcore::ScalarValue::Integer(1));
         assert_eq!(ContractError::new("why").to_string(), "why");
     }
 
