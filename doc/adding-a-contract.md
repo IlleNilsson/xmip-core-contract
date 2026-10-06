@@ -57,5 +57,13 @@ How the repository is created, mounted and landed is the estate's:
 The Playground pairs every contract against every transport, so a new contract is
 picked up by RoundTrip the same way a new transport is.
 
+### Reaching a node
+
+Not yet. A node refuses to start a Location that names a contract
+([decided, not built](../../../../../doc/architecture/estate-map.md#arrival-validation)), so a contract is proven in
+the Playground's harness and through the runtime's Module loader, which
+configures, starts and stops a loaded contract table and is not in
+`xmip-service` ([built, not in the assembled service](../../../../../doc/architecture/estate-map.md#module-loading)).
+
 ---
 

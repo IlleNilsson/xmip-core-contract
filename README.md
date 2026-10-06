@@ -23,6 +23,16 @@ A Contract holds well-formedness always and conformance when named
 not execute a Path; the representation technologies materialize, Paths
 address, and this evaluates (`repository-model.md` section 5).
 
+Where a contract is called today: the runtime's loader configures, starts
+and stops a contract table it opened
+([built, not in the assembled service](../../../../doc/architecture/estate-map.md#module-loading)),
+and the Playground validates its generated content through the contract
+technologies it links. A node holding a Location's Streams to a contract is
+[decided, not built](../../../../doc/architecture/estate-map.md#arrival-validation):
+a node refuses to start a Location that names one, and a new contract
+reaches a node only by being linked into `xmip-service` and built again
+with `Build-XmipService`.
+
 What a Location gives a contract is declared by the contract itself:
 `ContractFactory::settings`, in the shape a transport's settings take
 (`xcore::settings`), read through by `open` (ADR-0064, amendment
