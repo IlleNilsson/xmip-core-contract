@@ -73,7 +73,7 @@ mod tests {
         assert_eq!(issues[0].code, "reference");
         assert_eq!(issues[0].message, "$ref #/nowhere does not land");
         assert_eq!(issues[0].path.as_deref(), Some("/b/0"));
-        assert!(dangling(&Value::Null).is_empty());
+        assert_eq!(dangling(&Value::Null), [] as [ValidationIssue; 0]);
     }
 
     #[test]

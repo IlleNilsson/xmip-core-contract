@@ -43,6 +43,6 @@ mod tests {
         assert_eq!(segment.element(2), ["ORDERS", "D"]);
         assert_eq!(segment.simple(1), "1");
         assert_eq!(segment.simple(3), "");
-        assert!(segment.element(0).is_empty());
+        assert_eq!(segment.element(0), [] as [String; 0]);
     }
 }
