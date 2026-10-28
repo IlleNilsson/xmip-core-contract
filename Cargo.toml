@@ -20,6 +20,8 @@ test-support = []
 
 [dependencies]
 xcore = { package = "xmip-core", git = "https://github.com/IlleNilsson/xmip-core", branch = "main" }
+# The standard Validate unit's declaration, and the stages it runs at.
+node = { package = "xmip-core-node", git = "https://github.com/IlleNilsson/xmip-core-node", branch = "main" }
 stream = { package = "xmip-core-stream", git = "https://github.com/IlleNilsson/xmip-core-stream", branch = "main" }
 # The C boundary export.rs stands on: the header's tables, mirrored in Rust.
 xmip_core_abi = { package = "xmip-core-abi", git = "https://github.com/IlleNilsson/xmip-core-abi", branch = "main" }
@@ -27,8 +29,8 @@ xmip_core_abi = { package = "xmip-core-abi", git = "https://github.com/IlleNilss
 # with the parser the JSON technologies read with.
 serde_json = "1"
 # A `$ref` is a URI fragment: percent-decoded by the estate's one reader
-# before it is a JSON Pointer (reference.rs).
-net = { package = "xmip-core-library-net", git = "https://github.com/IlleNilsson/xmip-core-library-net", branch = "main" }
+# (codec::percent) before it is a JSON Pointer (reference.rs).
+codec = { package = "xmip-core-library-codec", git = "https://github.com/IlleNilsson/xmip-core-library-codec", branch = "main" }
 
 [profile.dev.package."*"]
 opt-level = 3

@@ -17,6 +17,7 @@ pub mod layout;
 pub mod place;
 pub mod reference;
 pub mod segment;
+pub mod validate;
 
 use std::borrow::Cow;
 use stream::Stream;
