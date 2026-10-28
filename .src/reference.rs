@@ -16,7 +16,7 @@ use serde_json::Value;
 pub fn resolve<'a>(document: &'a Value, reference: &str) -> Option<&'a Value> {
     let fragment = reference.strip_prefix('#')?;
     if fragment.contains('%') {
-        document.pointer(&net::percent::decode(fragment))
+        document.pointer(&codec::percent::decode(fragment))
     } else {
         document.pointer(fragment)
     }
