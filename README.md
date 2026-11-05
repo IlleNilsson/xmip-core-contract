@@ -26,7 +26,7 @@ address, and this evaluates (`repository-model.md` section 5).
 Where a contract is called today: the runtime's loader configures, starts
 and stops a contract table it opened
 ([built, not in the assembled service](../../../../doc/architecture/estate-map.md#module-loading)),
-and the Playground validates its generated content through the contract
+and the Essentials validates its generated content through the contract
 technologies it links. A node holding a Location's Streams to a contract is
 [decided, not built](../../../../doc/architecture/estate-map.md#arrival-validation):
 a node refuses to start a Location that names one, and a new contract
@@ -40,4 +40,4 @@ What a Location gives a contract is declared by the contract itself:
 
 ADR-0010 and ADR-0042 govern it; each format is a technology mounted under
 this repository, `csv` the reference, and `doc/adding-a-contract.md` beside
-this file says how one is added. `architecture.toml` names them.
+this file says how one is added. `architecture.xmip` names them.

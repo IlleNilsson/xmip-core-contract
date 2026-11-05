@@ -1,9 +1,6 @@
 [submodule "modules/csv"]
 	path = csv
 	url = https://github.com/IlleNilsson/xmip-core-contract-csv.git
-[submodule "xmip-core-contract-dotnet"]
-	path = dotnet
-	url = https://github.com/IlleNilsson/xmip-core-contract-dotnet.git
 [submodule "xmip-core-contract-json-schema"]
 	path = json-schema
 	url = https://github.com/IlleNilsson/xmip-core-contract-json-schema.git
@@ -22,9 +19,6 @@
 [submodule "xmip-core-contract-edi-edifact"]
 	path = edi-edifact
 	url = https://github.com/IlleNilsson/xmip-core-contract-edi-edifact.git
-[submodule "xmip-core-contract-rust"]
-	path = rust
-	url = https://github.com/IlleNilsson/xmip-core-contract-rust.git
 [submodule "xmip-core-contract-hl7-v2"]
 	path = hl7-v2
 	url = https://github.com/IlleNilsson/xmip-core-contract-hl7-v2.git
