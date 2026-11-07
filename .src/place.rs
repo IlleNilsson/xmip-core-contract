@@ -156,6 +156,7 @@ pub fn escape(token: &str) -> Cow<'_, str> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::assert_matches;
 
     #[test]
     fn one_place_is_spelled_in_each_form() {
@@ -178,7 +179,7 @@ mod tests {
         assert_eq!(Place::Root.dotted(), "");
         let root = Place::Root;
         assert_eq!(root.field("a/b~c").pointer(), "/a~1b~0c");
-        assert!(matches!(escape("plain"), Cow::Borrowed("plain")));
+        assert_matches!(escape("plain"), Cow::Borrowed("plain"));
         assert_eq!(escape("~1"), "~01");
     }
 }
