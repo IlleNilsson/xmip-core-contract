@@ -28,13 +28,16 @@
 
 use crate::{Contract, ContractFactory};
 use core::ffi::c_void;
-use std::panic::{AssertUnwindSafe, catch_unwind};
 use stream::Stream;
 use xcore::StreamId;
 use xmip_core_abi::XMIP_ABI_VERSION;
 use xmip_core_abi::ffi::{
-    ContractVtable, Diagnostic, Host, Module, Reader, Str, VtableHeader, WireDescriptor, status,
+    ContractVtable, Diagnostic, Host, Module, Reader, Str, VtableHeader, WireDescriptor,
 };
+/// The boundary's statuses and its one panic guard (specification section
+/// 6), here so the entry point [`export_contract!`] writes in a module's
+/// crate reaches them.
+pub use xmip_core_abi::{ffi::status, guarded};
 
 /// The contract table's version this export implements; header section 12.
 pub const TRAIT_MAJOR: u32 = 1;
@@ -140,16 +143,19 @@ macro_rules! export_contract {
             host: *const ::core::ffi::c_void,
             out: *mut ::core::ffi::c_void,
         ) -> i32 {
-            // Evaluated here, outside the unsafe block, so a caller's
-            // expression is never run with unsafe permitted.
-            let factory = $factory;
-            let identity = $crate::export::Identity {
-                provider: $provider,
-                standard: $standard,
-                version: ($major, $minor, $patch),
-            };
-            // SAFETY: the host's pointers are passed through unchanged.
-            unsafe { $crate::export::create(host, out, factory, identity) }
+            // Nothing unwinds into the host (specification section 6).
+            $crate::export::guarded($crate::export::status::PANIC, || {
+                // Evaluated here, outside the unsafe block, so a caller's
+                // expression is never run with unsafe permitted.
+                let factory = $factory;
+                let identity = $crate::export::Identity {
+                    provider: $provider,
+                    standard: $standard,
+                    version: ($major, $minor, $patch),
+                };
+                // SAFETY: the host's pointers are passed through unchanged.
+                unsafe { $crate::export::create(host, out, factory, identity) }
+            })
         }
     };
 }
@@ -193,11 +199,6 @@ fn str_of(text: &str) -> Str {
     }
 }
 
-/// Run `call`, answering `PANIC` rather than unwinding into the host.
-fn guarded(call: impl FnOnce() -> i32) -> i32 {
-    catch_unwind(AssertUnwindSafe(call)).unwrap_or(status::PANIC)
-}
-
 unsafe extern "C" fn configure(_state: *mut c_void, _toml: Str) -> i32 {
     status::OK
 }
@@ -222,7 +223,7 @@ unsafe extern "C" fn load<F: ContractFactory + 'static>(
         state.error = "the descriptor is not UTF-8".to_string();
         return status::INVALID;
     };
-    guarded(|| match state.factory.load(reference) {
+    guarded(status::PANIC, || match state.factory.load(reference) {
         Ok(contract) => {
             let descriptor = reference.to_string();
             let loaded = Box::into_raw(Box::new(Loaded {
@@ -243,7 +244,9 @@ unsafe extern "C" fn load<F: ContractFactory + 'static>(
 unsafe extern "C" fn release(_state: *mut c_void, contract: *mut c_void) {
     if !contract.is_null() {
         // SAFETY: only `load` makes these pointers, from Box::into_raw.
-        drop(unsafe { Box::from_raw(contract.cast::<Loaded>()) });
+        let loaded = unsafe { Box::from_raw(contract.cast::<Loaded>()) };
+        // A contract's own drop is the module's code, guarded as any.
+        guarded((), || drop(loaded));
     }
 }
 
@@ -280,7 +283,7 @@ unsafe extern "C" fn validate<F: ContractFactory + 'static>(
         Err(code) => return code,
     };
     let stream = Stream::new(StreamId::new(0), bytes, None);
-    guarded(|| match loaded.contract.validate(&stream) {
+    guarded(status::PANIC, || match loaded.contract.validate(&stream) {
         Ok(result) if result.valid => status::OK,
         Ok(result) => {
             state.texts = result
@@ -347,7 +350,9 @@ unsafe extern "C" fn implies(
     }
     // SAFETY: contract is ours; the header guarantees the key for the call.
     let (loaded, key) = unsafe { (&*contract.cast::<Loaded>(), text_of(key)) };
-    let descriptor = loaded.contract.descriptor();
+    let Some(descriptor) = guarded(None, || Some(loaded.contract.descriptor())) else {
+        return status::PANIC;
+    };
     let answer = match key {
         Some("descriptor") if !loaded.descriptor.is_empty() => &loaded.descriptor,
         Some("contract") => &descriptor.id.0,
@@ -372,7 +377,9 @@ unsafe extern "C" fn last_error<F: ContractFactory + 'static>(state: *mut c_void
 unsafe extern "C" fn destroy<F: ContractFactory + 'static>(state: *mut c_void) {
     if !state.is_null() {
         // SAFETY: made by Box::into_raw in `create`.
-        drop(unsafe { Box::from_raw(state.cast::<State<F>>()) });
+        let state = unsafe { Box::from_raw(state.cast::<State<F>>()) };
+        // The factory's own drop is the module's code, guarded as any.
+        guarded((), || drop(state));
     }
 }
 
