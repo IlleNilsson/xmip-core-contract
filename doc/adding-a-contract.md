@@ -22,7 +22,10 @@ pub trait Contract: Send + Sync {
 `identify` answers "does this stream look like mine" (cheaply); `validate`
 answers "and is it well-formed", returning `ValidationIssue`s rather than a bare
 false so an operator sees *what* failed. Both read text through
-`Stream::text`, decoded once for the two of them; an issue's code is a
+`contract::text`, over `Stream::text`, decoded once for the two of them, and
+bytes through `stream.load()?`: content that could not be read is an `Err`,
+never empty content and never an issue, and only content read that is not
+UTF-8 is the technology's to report; an issue's code is a
 `&'static str` where the technology names it, and its place is a
 `contract::place::Place` walked down the content and spelled only when an
 issue is raised. Whatever the reference names — a schema, a message type — is
