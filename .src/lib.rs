@@ -103,6 +103,30 @@ impl ValidationResult {
 // thing it reads — as against one that judged and found issues.
 xcore::declare_error!(ContractError);
 
+/// Content that could not be read is a contract that could not judge: the
+/// error says what the read met, so `stream.load()?` is how a contract reads
+/// the whole content.
+impl From<stream::Unread> for ContractError {
+    fn from(unread: stream::Unread) -> Self {
+        Self::new(unread.to_string())
+    }
+}
+
+/// The Stream as text, for a contract to judge: content that could not be
+/// read is the contract's error, and content read that is not UTF-8 is the
+/// inner `Err`, for the contract to report as an issue or as not its own.
+/// The one place a contract tells the two apart (ADR-0044).
+///
+/// # Errors
+/// The content could not be read.
+pub fn text(stream: &Stream) -> Result<Result<&str, std::str::Utf8Error>, ContractError> {
+    match stream.text() {
+        Ok(text) => Ok(Ok(text)),
+        Err(stream::TextError::NotUtf8(refused)) => Ok(Err(refused)),
+        Err(stream::TextError::Unread(unread)) => Err(unread.into()),
+    }
+}
+
 /// The rules a Stream is held to before Xmip accepts it (ADR-0010).
 ///
 /// A departure the contract can describe is a [`ValidationIssue`] in an
@@ -194,7 +218,7 @@ mod tests {
         }
 
         fn validate(&self, stream: &Stream) -> Result<ValidationResult, ContractError> {
-            let issues = match stream.text() {
+            let issues = match text(stream)? {
                 Ok(_) => Vec::new(),
                 Err(error) => vec![ValidationIssue {
                     code: "not-text".into(),
@@ -270,6 +294,27 @@ mod tests {
         assert!(!held.valid);
         assert_eq!(held.issues[0].code, "not-text");
         assert_eq!(held.issues[0].path.as_deref(), Some("byte 0"));
+    }
+
+    /// Kept content that cannot be reached.
+    struct Gone;
+
+    impl stream::Content for Gone {
+        fn reader(&self) -> std::io::Result<Box<dyn std::io::Read + Send + '_>> {
+            Err(std::io::Error::other("no chunk"))
+        }
+    }
+
+    #[test]
+    fn content_that_cannot_be_read_is_an_error_never_an_issue() {
+        let gone = Stream::kept(StreamId::new(2), 5, None, std::sync::Arc::new(Gone));
+        let contract = Factory.load("").expect("loaded");
+        let failed = contract.validate(&gone).expect_err("could not judge");
+        assert!(failed.message.contains("no chunk"), "{failed}");
+        assert!(
+            text(&stream(&[0xff], None)).expect("read").is_err(),
+            "not UTF-8"
+        );
     }
 
     #[test]

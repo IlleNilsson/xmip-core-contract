@@ -15,8 +15,11 @@ binary datum by field names (`order.lines[2]`), an XML document as an XPath
 (`/order/line[2]/@currency`). A `$ref` is a URI fragment, percent-decoded by
 `xmip-core-library-net` before it is a JSON Pointer, read one way by the
 `OpenAPI`, `AsyncAPI` and JSON Schema technologies. A contract reads a Stream as
-text through `Stream::text`, decoded once and shared by `identify` and
-`validate`.
+text through `contract::text`, over `Stream::text`, decoded once and shared by
+`identify` and `validate`, and its bytes whole through `Stream::load`: content
+that could not be read is the contract's error (`ContractError` converts from
+`stream::Unread`), never empty content and never an issue, and content read
+that is not UTF-8 is the contract's to judge.
 
 A Contract holds well-formedness always and conformance when named
 (ADR-0042). It does not parse for its own sake, does not serialize and does

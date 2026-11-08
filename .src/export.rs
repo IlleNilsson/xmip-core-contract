@@ -401,10 +401,10 @@ mod tests {
         }
 
         fn validate(&self, stream: &Stream) -> Result<ValidationResult, ContractError> {
-            if stream.bytes().first() == Some(&0) {
+            if stream.load()?.first() == Some(&0) {
                 return Err(ContractError::new("a NUL first is not text of any kind"));
             }
-            Ok(ValidationResult::of(match stream.text() {
+            Ok(ValidationResult::of(match crate::text(stream)? {
                 Ok(_) => Vec::new(),
                 Err(error) => vec![ValidationIssue::at(
                     "not-text",

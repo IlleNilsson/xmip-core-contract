@@ -30,10 +30,10 @@ mod tests {
     #[test]
     fn a_fixture_carries_the_text_and_the_media_type_it_was_given() {
         let bare = stream("x");
-        assert_eq!(bare.bytes(), b"x");
+        assert_eq!(bare.load(), Ok(&b"x"[..]));
         assert_eq!(bare.media_type(), None);
         let typed = stream_as("{}", Some("application/json"));
-        assert_eq!(typed.bytes(), b"{}");
+        assert_eq!(typed.load(), Ok(&b"{}"[..]));
         assert_eq!(typed.media_type(), Some("application/json"));
     }
 }
