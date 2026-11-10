@@ -52,7 +52,7 @@ substituting `contract` for `transport`:
   contract capability's repository;
 - `Cargo.toml` depends on `contract = { package = "xmip-core-contract", … }`
   (and `stream`, for the `Stream` type);
-- declare `[xmip.core.contract.<name>]` in `architecture.xmip`.
+- declare `[xmip.core.contract.<name>]` in `architecture.toml`.
 
 How the repository is created, mounted and landed is the estate's:
 `doc/architecture/repository-model.md` sections 7, 8 and 10.

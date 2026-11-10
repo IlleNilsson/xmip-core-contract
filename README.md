@@ -43,4 +43,4 @@ What a Location gives a contract is declared by the contract itself:
 
 ADR-0010 and ADR-0042 govern it; each format is a technology mounted under
 this repository, `csv` the reference, and `doc/adding-a-contract.md` beside
-this file says how one is added. `architecture.xmip` names them.
+this file says how one is added. `architecture.toml` names them.
