@@ -29,7 +29,7 @@ address, and this evaluates (`repository-model.md` section 5).
 Where a contract is called today: the runtime's loader configures, starts
 and stops a contract table it opened
 ([built, not in the assembled service](../../../../doc/architecture/estate-map.md#module-loading)),
-and the Essentials validates its generated content through the contract
+and the System Tests validate their generated content through the contract
 technologies it links. A node holding a Location's Streams to a contract is
 [decided, not built](../../../../doc/architecture/estate-map.md#arrival-validation):
 a node refuses to start a Location that names one, and a new contract

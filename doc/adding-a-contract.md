@@ -57,14 +57,14 @@ substituting `contract` for `transport`:
 How the repository is created, mounted and landed is the estate's:
 `doc/architecture/repository-model.md` sections 7, 8 and 10.
 
-The Essentials pairs every contract against every transport, so a new contract is
+The System Tests pair every contract against every transport, so a new contract is
 picked up by RoundTrip the same way a new transport is.
 
 ### Reaching a node
 
 Not yet. A node refuses to start a Location that names a contract
 ([decided, not built](../../../../../doc/architecture/estate-map.md#arrival-validation)), so a contract is proven in
-the Essentials' harness and through the runtime's Module loader, which
+the System Tests' harness and through the runtime's Module loader, which
 configures, starts and stops a loaded contract table and is not in
 `xmip-service` ([built, not in the assembled service](../../../../../doc/architecture/estate-map.md#module-loading)).
 
