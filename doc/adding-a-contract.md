@@ -65,8 +65,9 @@ picked up by RoundTrip the same way a new transport is.
 Not yet. A node refuses to start a Location that names a contract
 ([decided, not built](../../../../../doc/architecture/estate-map.md#arrival-validation)), so a contract is proven in
 the System Tests' harness and through the runtime's Module loader, which
-configures, starts and stops a loaded contract table and is not in
-`xmip-service` ([built, not in the assembled service](../../../../../doc/architecture/estate-map.md#module-loading)).
+configures, starts and stops a loaded contract table, in `xmip-service` as
+everywhere, though no Location calls it
+([built, in the assembled service](../../../../../doc/architecture/estate-map.md#module-loading)).
 
 ---
 
