@@ -52,7 +52,13 @@ substituting `contract` for `transport`:
   contract capability's repository;
 - `Cargo.toml` depends on `contract = { package = "xmip-core-contract", … }`
   (and `stream`, for the `Stream` type);
-- declare `[xmip.core.contract.<name>]` in `architecture.toml`.
+- declare `[xmip.core.contract.<name>]` in `architecture.toml`;
+- the declaration in `src/declaration.rs` — `SETTINGS` and `NAME`, the word
+  a Validate step's `format` names the contract by, both read by its
+  `ContractFactory` — built with the crate's `declaration` feature alone,
+  the capability, the Stream and every parser behind the default feature,
+  as a transport's (its guide's "The declaration"; ADR-0064, amendment
+  2026-11-26).
 
 How the repository is created, mounted and landed is the estate's:
 `doc/architecture/repository-model.md` sections 7, 8 and 10.
