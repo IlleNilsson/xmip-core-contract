@@ -57,8 +57,8 @@ substituting `contract` for `transport`:
   a Validate step's `format` names the contract by, both read by its
   `ContractFactory` — built with the crate's `declaration` feature alone,
   the capability, the Stream and every parser behind the default feature,
-  as a transport's (its guide's "The declaration"; ADR-0064, amendment
-  2026-11-26).
+  as a transport's (its guide's "The declaration"; ADR-0064, amendments
+  2026-10-22 and 2026-11-26).
 
 How the repository is created, mounted and landed is the estate's:
 `doc/architecture/repository-model.md` sections 7, 8 and 10.
