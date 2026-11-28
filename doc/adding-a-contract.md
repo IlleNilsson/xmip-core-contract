@@ -50,8 +50,9 @@ substituting `contract` for `transport`:
 
 - repo `xmip-core-contract-<name>`, mounted at `<name>` directly inside the
   contract capability's repository;
-- `Cargo.toml` depends on `contract = { package = "xmip-core-contract", … }`
-  (and `stream`, for the `Stream` type);
+- `Cargo.toml` depends on `contract = { workspace = true }` (and `stream`,
+  for the `Stream` type), the keys the estate's root
+  `[workspace.dependencies]` holds;
 - declare `[xmip.core.contract.<name>]` in `architecture.toml`;
 - the declaration in `src/declaration.rs` — `SETTINGS` and `NAME`, the word
   a Validate step's `format` names the contract by, both read by its
